@@ -98,4 +98,62 @@ app.listen(port, () => {
   console.log(`Serveur démarré sur http://localhost:${port}`);
 });
 
+const express = require('express');
+const { createClient } = require('@redis/client');
+require('dotenv').config();
+
+const app = express();
+const port = 3000;
+
+// Création d'un client Redis
+const client = createClient({
+  url: process.env.REDIS_URL, // Assurez-vous que votre REDIS_URL est dans votre .env
+});
+
+client.on('connect', () => console.log('Connecté à Redis'));
+client.on('error', (err) => console.error('Erreur Redis :', err));
+
+(async () => {
+  await client.connect();
+})();
+
+// Route pour récupérer des données avec expiration
+app.get('/data/:key', async (req, res) => {
+  const { key } = req.params;
+
+  try {
+    // Vérifier si les données sont présentes dans le cache Redis
+    const cachedData = await client.get(key);
+    
+    if (cachedData) {
+      // Si les données sont en cache, les renvoyer directement
+      console.log('Données récupérées du cache');
+      return res.json(JSON.parse(cachedData)); // Retourner les données en JSON
+    }
+
+    // Sinon, faire un traitement coûteux pour récupérer les données
+    console.log('Données non trouvées dans le cache, récupération...');
+
+    // Exemple de traitement coûteux (vous pouvez remplacer cela par une requête à votre base de données)
+    const newData = {
+      id: key,
+      name: 'Data Exemple',
+      description: 'Données récupérées après traitement coûteux',
+    };
+
+    // Sauvegarder les nouvelles données dans Redis avec une expiration de 60 secondes
+    await client.setEx(key, 60, JSON.stringify(newData)); // Données expirent après 60 secondes
+
+    // Retourner les nouvelles données
+    res.json(newData);
+  } catch (error) {
+    console.error('Erreur:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
+// Démarrer le serveur Express
+app.listen(port, () => {
+  console.log(`Serveur démarré sur http://localhost:${port}`);
+});
 
