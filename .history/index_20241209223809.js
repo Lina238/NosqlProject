@@ -2,7 +2,7 @@ const express = require('express');
 const { createClient } = require('@redis/client');
 require('dotenv').config();
 const cors =require("cors")
-
+app.use(cors())
 // Initialisation du client Redis
 const client = createClient({ url: process.env.REDIS_URL });
 
@@ -17,7 +17,7 @@ client.on('error', (err) => console.error('Erreur Redis :', err));
 // Initialisation du serveur Express
 const app = express();
 const port = 3000;
-app.use(cors())
+
 // Fonction pour récupérer les données d'un utilisateur
 const getUser = async (userId) => {
   const userData = await client.hGetAll(`user:${userId}`);
@@ -93,16 +93,12 @@ app.get('/class/:id', async (req, res) => {
   }
   return res.json(classData);
 });
-//le cas le plus utilisé
-app.get("/photos",async(req,res)=>{
-  const lid_album=req.query.albumId
-  const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos?albumId=${lid_album}`)
-return res.json(data)
-})
+
 // Démarrer le serveur
 app.listen(port, () => {
   console.log(`Serveur démarré sur http://localhost:${port}`);
 });
 
-
+//le cas le plus utilisé
+app.get("/")
 

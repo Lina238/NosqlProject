@@ -17,7 +17,7 @@ client.on('error', (err) => console.error('Erreur Redis :', err));
 // Initialisation du serveur Express
 const app = express();
 const port = 3000;
-app.use(cors())
+
 // Fonction pour récupérer les données d'un utilisateur
 const getUser = async (userId) => {
   const userData = await client.hGetAll(`user:${userId}`);
