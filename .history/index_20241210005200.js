@@ -97,6 +97,7 @@ app.get('/class/:id', async (req, res) => {
 });
 //le cas le plus utilisé
 app.get("/photos",async(req,res)=>{
+  const lid_album=req.query.albumId
   const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`)
 return res.json(data)
 })
