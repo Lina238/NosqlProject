@@ -20,6 +20,56 @@ client.on('error', (err) => console.error('Erreur Redis :', err));
 const app = express();
 const port = 3000;
 app.use(cors())
+
+
+// Fonction pour récupérer un cours
+const getClass = async (classId) => {
+  const classData = await client.hGetAll(`class:${classId}`);
+  if (Object.keys(classData).length === 0) {
+    return null;
+  }
+  return classData;
+};
+
+// Route pour obtenir un utilisateur
+app.get('/user/:id', async (req, res) => {
+  const userId = req.params.id;
+  const user = await getUser(userId);
+  if (!user) {
+    return res.status(404).json({ message: 'Utilisateur non trouvé' });
+  }
+  return res.json(user);
+});
+
+// Route pour obtenir un abonnement
+app.get('/subscription/:id', async (req, res) => {
+  const subscriptionId = req.params.id;
+  const subscription = await getSubscription(subscriptionId);
+  if (!subscription) {
+    return res.status(404).json({ message: 'Abonnement non trouvé' });
+  }
+  return res.json(subscription);
+});
+
+// Route pour obtenir un équipement
+app.get('/equipment/:id', async (req, res) => {
+  const equipmentId = req.params.id;
+  const equipment = await getEquipment(equipmentId);
+  if (!equipment) {
+    return res.status(404).json({ message: 'Équipement non trouvé' });
+  }
+  return res.json(equipment);
+});
+
+// Route pour obtenir un cours
+app.get('/class/:id', async (req, res) => {
+  const classId = req.params.id;
+  const classData = await getClass(classId);
+  if (!classData) {
+    return res.status(404).json({ message: 'Cours non trouvé' });
+  }
+  return res.json(classData);
+});
 //le cas le plus utilisé
 app.get("/photos",async(req,res)=>{
   const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`)
