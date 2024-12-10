@@ -111,7 +111,7 @@ app.get("/photos_withredis",async(req,res)=>{
 
   //   console.log(`Clé Redis 'photos' supprimée : ${response}`);
   // });
-  //photos?albumId=§{albumId}
+  //photos?albumId=
   client.get('photos',async(err,data)=>{
     
    if(err) console.log(err)
@@ -120,8 +120,7 @@ app.get("/photos_withredis",async(req,res)=>{
    }
    else {
      const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`)
-     //photos?albumId=§{albumId}
-     client.setEx("photos",exp_date,JSON.stringify(data))//puisque redis ne prend que des strings
+     client.setex("photos",exp_date,JSON.stringify(data))//puisque redis ne prend que des strings
    }
  })
 })
