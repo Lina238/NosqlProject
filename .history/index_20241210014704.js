@@ -116,7 +116,7 @@ app.get("/photos_withredis",async(req,res)=>{
     // const albumId=req.params.albumId
    if(err) console.log(err)
    if(dataphotos!==null){
-     return res.json(JSON.parse(dataphotos))
+     return res.json(JSON.parse(data))
    }
    else {
      const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`,
