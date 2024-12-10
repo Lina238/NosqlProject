@@ -120,7 +120,7 @@ app.get("/photos_withredis",async(req,res)=>{
    }
    else {
      const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`,
-      // {params:{albumId:albumId}}
+      {params:{albumId:req.params.albumId}}
      )
      //photos?albumId=§{albumId}
      client.setEx("photos",exp_date,JSON.stringify(data))//puisque redis ne prend que des strings

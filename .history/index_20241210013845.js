@@ -113,15 +113,13 @@ app.get("/photos_withredis",async(req,res)=>{
   // });
   //photos?albumId=§{albumId}
   client.get('photos',async(err,data)=>{
-    // const albumId=req.params.albumId
+    const id=req.query.albumId
    if(err) console.log(err)
    if(data!==null){
      return res.json(JSON.parse(data))
    }
    else {
-     const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`,
-      // {params:{albumId:albumId}}
-     )
+     const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`)
      //photos?albumId=§{albumId}
      client.setEx("photos",exp_date,JSON.stringify(data))//puisque redis ne prend que des strings
    }
