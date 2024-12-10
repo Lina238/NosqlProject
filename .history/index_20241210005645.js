@@ -95,24 +95,13 @@ app.get('/class/:id', async (req, res) => {
   }
   return res.json(classData);
 });
+//example date expiration
+exp_date=3600//
 //le cas le plus utilisé
 app.get("/photos",async(req,res)=>{
+  RedisClient.setex("photos",,JSON.stringify(data))
   const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`)
 return res.json(data)
-})
-//date expiration
-exp_date=3600//1h
-app.get("/photos_withredis",async(req,res)=>{
-  RedisClient.get('photos',async(err,data)=>{
-   if(err) console.log(err)
-   if(data!==null){
-     return res.json(JSON.parse(data))
-   }
-   else {
-     const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`)
-   RedisClient.setex("photos",exp_date,JSON.stringify(data))//puisque redis ne prend que des strings
-   }
- })
 })
 // Démarrer le serveur
 app.listen(port, () => {

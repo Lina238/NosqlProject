@@ -102,7 +102,7 @@ return res.json(data)
 })
 //date expiration
 exp_date=3600//1h
-app.get("/photos_withredis",async(req,res)=>{
+app.get("/photos",async(req,res)=>{
   RedisClient.get('photos',async(err,data)=>{
    if(err) console.log(err)
    if(data!==null){

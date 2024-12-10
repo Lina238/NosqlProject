@@ -100,9 +100,8 @@ app.get("/photos",async(req,res)=>{
   const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`)
 return res.json(data)
 })
-//date expiration
-exp_date=3600//1h
-app.get("/photos_withredis",async(req,res)=>{
+//date expir
+app.get("/photos",async(req,res)=>{
   RedisClient.get('photos',async(err,data)=>{
    if(err) console.log(err)
    if(data!==null){

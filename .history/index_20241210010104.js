@@ -100,9 +100,7 @@ app.get("/photos",async(req,res)=>{
   const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`)
 return res.json(data)
 })
-//date expiration
-exp_date=3600//1h
-app.get("/photos_withredis",async(req,res)=>{
+app.get("/photos",async(req,res)=>{
   RedisClient.get('photos',async(err,data)=>{
    if(err) console.log(err)
    if(data!==null){
@@ -113,7 +111,6 @@ app.get("/photos_withredis",async(req,res)=>{
    RedisClient.setex("photos",exp_date,JSON.stringify(data))//puisque redis ne prend que des strings
    }
  })
-})
 // Démarrer le serveur
 app.listen(port, () => {
   console.log(`Serveur démarré sur http://localhost:${port}`);
