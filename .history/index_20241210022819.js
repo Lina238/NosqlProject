@@ -39,26 +39,37 @@ app.get("/photos",async(req,res)=>{
 return res.json(data)
 })
 //date expiration
-//ne pas oublier d'expliquer le cas d'id specifique
-app.get("/photoswithredis", async (req, res) => {
-  try {
-    const photos = await client.get("photos");
-    if (photos) {
-      return res.json(JSON.parse(photos));
-    } else {
-      const { data } = await axios.get("https://jsonplaceholder.typicode.com/photos");
+const exp_date=3600//1h
+app.get("/photoswithredis",async(req,res)=>{
+  // client.del('photos', async (err, response) => {
+  //   if (err) {
+  //     console.error('Erreur lors de la suppression de la clé Redis :', err);
+  //     return res.status(500).json({ message: 'Erreur interne du serveur' });
+  //   }
 
-      // Enregistrez les données récupérées dans Redis avec une date d'expiration
-      // (par exemple, 1 heure)
-      await client.setEx("photos", 3600, JSON.stringify(data)); //string
-      return res.json(data);
+  //   console.log(`Clé Redis 'photos' supprimée : ${response}`);
+  // });
+  //photos?albumId=§{albumId}
+  let datareturn={}
+  client.get("photos",async(err,photos)=>{
+    // const albumId=req.params.albumId
+   if(err) throw err
+
+   if(photos!==null){
+    datareturn=JSON.parse(photos)
+     return res.json(JSON.parse(datareturn))
+   }else {
+     const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`,
+      // {params:{albumId:albumId}}
+     )
+     //photos?albumId=§{albumId}
+     client.setex("photos",exp_date,JSON.stringify(data))//puisque redis ne prend que des strings
+     datareturn=
+     return res.json(data)
     }
-  } catch (err) {
-    console.error("Erreur lors de la récupération des photos :", err);
-    return res.status(500).json({ message: "Erreur interne du serveur" });
-  }
-});
-
+   
+ })
+})
 // Démarrer le serveur
 app.listen(port, () => {
   console.log(`Serveur démarré sur http://localhost:${port}`);

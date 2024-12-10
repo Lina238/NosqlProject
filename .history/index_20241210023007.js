@@ -39,7 +39,7 @@ app.get("/photos",async(req,res)=>{
 return res.json(data)
 })
 //date expiration
-//ne pas oublier d'expliquer le cas d'id specifique
+const exp_date=3600//1h
 app.get("/photoswithredis", async (req, res) => {
   try {
     const photos = await client.get("photos");
@@ -49,8 +49,10 @@ app.get("/photoswithredis", async (req, res) => {
       const { data } = await axios.get("https://jsonplaceholder.typicode.com/photos");
 
       // Enregistrez les données récupérées dans Redis avec une date d'expiration
-      // (par exemple, 1 heure)
-      await client.setEx("photos", 3600, JSON.stringify(data)); //string
+       (par exemple, 1 heure)
+      await client.setEx("photos", 3600, JSON.stringify(data)); // Expiration dans 3600 secondes (1 heure)
+
+      // Renvoyez les données récupérées
       return res.json(data);
     }
   } catch (err) {

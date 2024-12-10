@@ -39,7 +39,7 @@ app.get("/photos",async(req,res)=>{
 return res.json(data)
 })
 //date expiration
-//ne pas oublier d'expliquer le cas d'id specifique
+const exp_date=3600//1h
 app.get("/photoswithredis", async (req, res) => {
   try {
     const photos = await client.get("photos");
