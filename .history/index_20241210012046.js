@@ -103,15 +103,7 @@ return res.json(data)
 //date expiration
 exp_date=3600//1h
 app.get("/photos_withredis",async(req,res)=>{
-  // client.del('photos', async (err, response) => {
-  //   if (err) {
-  //     console.error('Erreur lors de la suppression de la clé Redis :', err);
-  //     return res.status(500).json({ message: 'Erreur interne du serveur' });
-  //   }
-
-  //   console.log(`Clé Redis 'photos' supprimée : ${response}`);
-  // });
-  client.get('photos',async(err,data)=>{
+  RedisClient.get('photos',async(err,data)=>{
     
    if(err) console.log(err)
    if(data!==null){
@@ -119,7 +111,7 @@ app.get("/photos_withredis",async(req,res)=>{
    }
    else {
      const {data}=await axios.get(`https://jsonplaceholder.typicode.com/photos`)
-     client.setex("photos",exp_date,JSON.stringify(data))//puisque redis ne prend que des strings
+   RedisClient.setex("photos",exp_date,JSON.stringify(data))//puisque redis ne prend que des strings
    }
  })
 })
