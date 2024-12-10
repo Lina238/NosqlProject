@@ -125,10 +125,8 @@ app.get("/photos_withredis",async(req,res)=>{
      //photos?albumId=§{albumId}
      client.setEx("photos",exp_date,JSON.stringify(data))//puisque redis ne prend que des strings
    }
-   return res.json(data)
- }
-)
-
+ })
+ return 
 })
 // Démarrer le serveur
 app.listen(port, () => {
